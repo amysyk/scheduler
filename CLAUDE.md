@@ -23,7 +23,7 @@ npm install
 npm run dev                    # Starts on http://localhost:3000
 
 # Build for production
-npm build
+npm run build
 
 # Lint code
 npm run lint
