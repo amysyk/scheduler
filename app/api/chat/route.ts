@@ -1,9 +1,20 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { fetchScheduleData } from "@/lib/notion";
+import * as fs from "fs";
+import * as path from "path";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
+
+// Read system prompt from file
+const systemPromptPath = path.join(
+  process.cwd(),
+  "prompts",
+  "scheduling-assistant.md"
+);
+const systemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
 
 export async function POST(request: NextRequest) {
   try {
@@ -18,16 +29,41 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log("Received user message:", message.substring(0, 100));
+    const userName = "app user"; // Phase 2: hardcoded for all users
+    console.log("User:", userName, "Question:", message.substring(0, 100));
 
-    // Call Claude API (non-streaming)
+    // Fetch fresh schedule data from Notion (no caching)
+    let scheduleData: string;
+    try {
+      scheduleData = await fetchScheduleData();
+    } catch (error: any) {
+      console.error("Notion API: Failed to fetch schedule", {
+        error: error.message,
+      });
+      return NextResponse.json(
+        {
+          error: "Sorry, I couldn't load the schedule. Please try again.",
+          details: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    // Call Claude API with system prompt and schedule context
     const response = await anthropic.messages.create({
       model: "claude-3-5-sonnet-20241022",
       max_tokens: 1024,
+      system: systemPrompt,
       messages: [
         {
           role: "user",
-          content: message,
+          content: `# Kids Schedule
+
+${scheduleData}
+
+---
+
+User question: ${message}`,
         },
       ],
     });
@@ -41,6 +77,7 @@ export async function POST(request: NextRequest) {
       assistantMessage.substring(0, 100),
       "..."
     );
+    console.log("User:", userName, "Response delivered");
 
     return NextResponse.json({
       message: assistantMessage,
