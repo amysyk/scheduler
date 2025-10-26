@@ -99,6 +99,21 @@ export async function fetchNotionPage(pageId: string): Promise<string> {
 }
 
 /**
+ * Formats a Notion page ID to include hyphens if needed
+ */
+function formatPageId(pageId: string): string {
+  // Remove any existing hyphens
+  const clean = pageId.replace(/-/g, "");
+
+  // Add hyphens in UUID format: 8-4-4-4-12
+  if (clean.length === 32) {
+    return `${clean.slice(0, 8)}-${clean.slice(8, 12)}-${clean.slice(12, 16)}-${clean.slice(16, 20)}-${clean.slice(20)}`;
+  }
+
+  return pageId; // Return as-is if already formatted or invalid length
+}
+
+/**
  * Fetches the Kids Schedule from Notion
  */
 export async function fetchScheduleData(): Promise<string> {
@@ -108,8 +123,10 @@ export async function fetchScheduleData(): Promise<string> {
     throw new Error("NOTION_SCHEDULE_PAGE_ID is not configured");
   }
 
-  console.log("Notion API: Fetching schedule data");
-  const scheduleData = await fetchNotionPage(schedulePageId);
+  const formattedPageId = formatPageId(schedulePageId);
+  console.log("Notion API: Fetching schedule data", { pageId: formattedPageId });
+
+  const scheduleData = await fetchNotionPage(formattedPageId);
   console.log("Notion API: Schedule data fetched successfully", {
     length: scheduleData.length,
   });
