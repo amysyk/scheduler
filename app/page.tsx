@@ -39,24 +39,25 @@ export default function Home() {
         body: JSON.stringify({ message: userMessage }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to get response");
-      }
-
       const data = await response.json();
+
+      if (!response.ok) {
+        // Show the actual error message from the API
+        throw new Error(data.error || data.details || "Failed to get response");
+      }
 
       // Add assistant message to chat
       setMessages((prev) => [
         ...prev,
         { role: "assistant", content: data.message },
       ]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error:", error);
       setMessages((prev) => [
         ...prev,
         {
           role: "assistant",
-          content: "Sorry, I encountered an error. Please try again.",
+          content: `Sorry, I encountered an error: ${error.message || "Please try again."}`,
         },
       ]);
     } finally {
