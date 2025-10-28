@@ -55,6 +55,7 @@ Required for both local and production:
 **`app/api/chat/route.ts`**
 - Serverless API endpoint that proxies requests to Claude API
 - Reads schedule from `data/schedule.md` and system prompt from `prompts/scheduling-assistant.md`
+- **Dynamically injects current date** in Pacific timezone into system prompt on every request
 - Accepts POST with `{ message: string }`
 - Returns `{ message: string }` with Claude's response
 - No conversation history - each request is stateless
@@ -69,6 +70,7 @@ Required for both local and production:
 **`prompts/scheduling-assistant.md`**
 - System prompt for Claude defining assistant behavior
 - Version controlled alongside code
+- Does not contain hardcoded date - date is dynamically injected by API route
 - Changes take effect on next deployment
 
 **`app/page.tsx`**
@@ -84,6 +86,7 @@ Required for both local and production:
 ### Design Constraints
 
 - All users assumed to be in Pacific timezone
+- **Dynamic date injection**: Current date automatically calculated in Pacific timezone on each request
 - Mobile-first responsive design (primarily iPhone users)
 - No conversation persistence between sessions
 - Simple console.log() based logging (view in Vercel dashboard)
@@ -105,11 +108,15 @@ Required for both local and production:
 - Google OAuth for user authentication
 - User permissions config file (read/write roles)
 - Memory system to update schedule file with new information
-- Pacific timezone handling for date/time parsing
 
 **Schedule updates**:
 - Currently: Manual edits to `data/schedule.md` followed by git commit/push
 - Future: Could add direct file editing via AI memory feature
 - Alternative: Could integrate with Notion API if needed
+
+**Completed features**:
+- ✅ Pacific timezone handling - automatically injected on each request
+- ✅ File-based storage - migrated from Notion API to local markdown
+- ✅ Dynamic date context - no manual updates needed
 
 When adding features, maintain the simple logging approach and mobile-first design.
