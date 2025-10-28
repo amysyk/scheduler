@@ -29,7 +29,19 @@ export async function POST(request: NextRequest) {
       "prompts",
       "scheduling-assistant.md"
     );
-    const systemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
+    const baseSystemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
+
+    // Get current date in Pacific timezone
+    const today = new Date().toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles",
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    // Inject today's date into system prompt
+    const systemPrompt = `${baseSystemPrompt}\n\n**Today's date is ${today} (Pacific Time)**`;
 
     // Read schedule data from file
     const schedulePath = path.join(process.cwd(), "data", "schedule.md");
