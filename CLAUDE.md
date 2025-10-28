@@ -6,8 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a **Scheduling Assistant** - a family coordination app for managing schedules, activities, and appointments. The project is built in phases:
 
-- **Phase 1 (Current)**: Basic chat interface with Claude API integration
-- **Future Phases**: Notion API integration, Google OAuth, user permissions, and memory features
+- **Phase 1**: Basic chat interface with Claude API integration
+- **Phase 2 (Current)**: Schedule context stored as local markdown file
+- **Future Phases**: Google OAuth, user permissions, and memory features
 
 **Key Users**: Three adults (parents + nanny) and two children in an extended household.
 
@@ -46,16 +47,29 @@ Required for both local and production:
 - **Framework**: Next.js 14 App Router (TypeScript)
 - **Styling**: Tailwind CSS (mobile-first design)
 - **AI**: Anthropic Claude API (non-streaming, claude-3-5-sonnet-20241022)
+- **Data Storage**: Local markdown file (version controlled)
 - **Deployment**: Vercel serverless functions
 
 ### Key Files
 
 **`app/api/chat/route.ts`**
 - Serverless API endpoint that proxies requests to Claude API
+- Reads schedule from `data/schedule.md` and system prompt from `prompts/scheduling-assistant.md`
 - Accepts POST with `{ message: string }`
 - Returns `{ message: string }` with Claude's response
 - No conversation history - each request is stateless
 - Logs all requests/responses with `console.log()`
+
+**`data/schedule.md`**
+- Contains kids' schedule data (Nina and Marco's activities)
+- Version controlled in git repository
+- Updated via git commits and Vercel redeployment
+- Changes propagate immediately (no caching)
+
+**`prompts/scheduling-assistant.md`**
+- System prompt for Claude defining assistant behavior
+- Version controlled alongside code
+- Changes take effect on next deployment
 
 **`app/page.tsx`**
 - Client-side chat interface ("use client")
@@ -87,16 +101,15 @@ Required for both local and production:
 
 ## Future Development Notes
 
-**Upcoming phases require**:
-- Notion API integration for reading/updating schedule data
+**Upcoming phases may include**:
 - Google OAuth for user authentication
 - User permissions config file (read/write roles)
-- Memory system to update Notion page with new information
+- Memory system to update schedule file with new information
 - Pacific timezone handling for date/time parsing
 
-**Notion integration will**:
-- Read from specific Notion page with schedule information
-- Update schedule by appending bullet points to the Notion document
-- Use Notion MCP server tools similar to the prototype
+**Schedule updates**:
+- Currently: Manual edits to `data/schedule.md` followed by git commit/push
+- Future: Could add direct file editing via AI memory feature
+- Alternative: Could integrate with Notion API if needed
 
 When adding features, maintain the simple logging approach and mobile-first design.

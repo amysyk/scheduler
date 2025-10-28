@@ -1,6 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
-import { fetchScheduleData } from "@/lib/notion";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -15,6 +14,10 @@ const systemPromptPath = path.join(
   "scheduling-assistant.md"
 );
 const systemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
+
+// Read schedule data from file
+const schedulePath = path.join(process.cwd(), "data", "schedule.md");
+const scheduleData = fs.readFileSync(schedulePath, "utf-8");
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,23 +34,6 @@ export async function POST(request: NextRequest) {
 
     const userName = "app user"; // Phase 2: hardcoded for all users
     console.log("User:", userName, "Question:", message.substring(0, 100));
-
-    // Fetch fresh schedule data from Notion (no caching)
-    let scheduleData: string;
-    try {
-      scheduleData = await fetchScheduleData();
-    } catch (error: any) {
-      console.error("Notion API: Failed to fetch schedule", {
-        error: error.message,
-      });
-      return NextResponse.json(
-        {
-          error: "Sorry, I couldn't load the schedule. Please try again.",
-          details: error.message,
-        },
-        { status: 500 }
-      );
-    }
 
     // Call Claude API with system prompt and schedule context
     const response = await anthropic.messages.create({
