@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
 
     // Call Claude API with system prompt and schedule context
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20240620",
+      model: "claude-3-opus-20240229",
       max_tokens: 1024,
       system: systemPrompt,
       messages: [
