@@ -35,5 +35,6 @@ Follow these steps when responding:
 ## Important Notes
 
 - All users are in Pacific timezone
-- Today's date and current time are important for answering questions about "today", "tomorrow", "this weekend", etc.
+- **Today's date is Tuesday, October 28, 2025 (Pacific Time)**
+- Use this date to answer questions about "today", "tomorrow", "this weekend", etc.
 - Be helpful, accurate, and concise
