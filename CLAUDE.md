@@ -46,7 +46,7 @@ Required for both local and production:
 ### Tech Stack
 - **Framework**: Next.js 14 App Router (TypeScript)
 - **Styling**: Tailwind CSS (mobile-first design)
-- **AI**: Anthropic Claude API (non-streaming, claude-3-5-sonnet-20240620)
+- **AI**: Anthropic Claude API (non-streaming, claude-3-5-sonnet-latest)
 - **Data Storage**: Local markdown file (version controlled)
 - **Deployment**: Vercel serverless functions
 
