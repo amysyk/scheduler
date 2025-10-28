@@ -7,18 +7,6 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-// Read system prompt from file
-const systemPromptPath = path.join(
-  process.cwd(),
-  "prompts",
-  "scheduling-assistant.md"
-);
-const systemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
-
-// Read schedule data from file
-const schedulePath = path.join(process.cwd(), "data", "schedule.md");
-const scheduleData = fs.readFileSync(schedulePath, "utf-8");
-
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -34,6 +22,18 @@ export async function POST(request: NextRequest) {
 
     const userName = "app user"; // Phase 2: hardcoded for all users
     console.log("User:", userName, "Question:", message.substring(0, 100));
+
+    // Read system prompt from file
+    const systemPromptPath = path.join(
+      process.cwd(),
+      "prompts",
+      "scheduling-assistant.md"
+    );
+    const systemPrompt = fs.readFileSync(systemPromptPath, "utf-8");
+
+    // Read schedule data from file
+    const schedulePath = path.join(process.cwd(), "data", "schedule.md");
+    const scheduleData = fs.readFileSync(schedulePath, "utf-8");
 
     // Call Claude API with system prompt and schedule context
     const response = await anthropic.messages.create({
