@@ -3,6 +3,7 @@ import Google from "next-auth/providers/google";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true, // Required for Vercel deployment
+  secret: process.env.AUTH_SECRET, // Explicitly pass secret for Edge Runtime
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
