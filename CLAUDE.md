@@ -10,7 +10,7 @@ This is a **Scheduling Assistant** - a family coordination app for managing sche
 - **Phase 2 (Current)**: Schedule context stored as local markdown file
 - **Future Phases**: Google OAuth, user permissions, and memory features
 
-**Key Users**: Three adults (parents + nanny) and two children in an extended household.
+**Key Users**: Three adults (parents + nanny) and two children in a household.
 
 **Success Criteria**: Daily usage by adults, 99% accuracy, quick updates via natural language.
 
@@ -49,6 +49,8 @@ Required for both local and production:
 - **AI**: Anthropic Claude API (non-streaming, claude-sonnet-4-5-20250929)
 - **Data Storage**: Local markdown file (version controlled)
 - **Deployment**: Vercel serverless functions
+- **Analytics**: Vercel Analytics (page views) and Speed Insights (Core Web Vitals)
+- **Markdown Rendering**: react-markdown with remark-gfm (GitHub Flavored Markdown) and rehype-highlight (code syntax highlighting)
 
 ### Key Files
 
@@ -82,6 +84,20 @@ Required for both local and production:
 **`app/components/UserMessage.tsx` & `AssistantMessage.tsx`**
 - Presentational components for rendering messages
 - Both left-aligned, differentiated by background color (white vs blue)
+- AssistantMessage renders markdown content with full GitHub Flavored Markdown support
+
+**`app/components/MarkdownContent.tsx`**
+- Renders markdown content with react-markdown
+- Custom Tailwind-styled components for all markdown elements
+- Supports headings, lists, code blocks with syntax highlighting, tables, links, blockquotes
+- Blue-themed styling matching app design system
+
+**`app/layout.tsx`**
+- Root layout component with metadata
+- Includes Vercel Analytics component for page view tracking
+- Includes Vercel Speed Insights component for Core Web Vitals monitoring (LCP, FID, CLS, TTFB, INP)
+- Imports highlight.js GitHub theme for code syntax highlighting
+- No environment variables required for analytics services
 
 ### Design Constraints
 
@@ -115,8 +131,10 @@ Required for both local and production:
 - Alternative: Could integrate with Notion API if needed
 
 **Completed features**:
-- ✅ Pacific timezone handling - automatically injected on each request
-- ✅ File-based storage - migrated from Notion API to local markdown
-- ✅ Dynamic date context - no manual updates needed
+- Pacific timezone handling - automatically injected on each request
+- File-based storage - migrated from Notion API to local markdown
+- Dynamic date context - no manual updates needed
+- Vercel Analytics and Speed Insights - tracking usage and performance metrics
+- Markdown rendering - assistant messages support full GitHub Flavored Markdown with syntax highlighting
 
 When adding features, maintain the simple logging approach and mobile-first design.

@@ -6,6 +6,8 @@ A chat-based scheduling assistant powered by Claude AI to help coordinate family
 
 This is Phase 2 of the Scheduling Assistant project - a chat interface with schedule context stored as a local file. The app reads the kids' schedule from a markdown file and uses it as context for Claude's responses.
 
+![Scheduling Assistant Interface](./public/app-screenshot.png)
+
 ## Tech Stack
 
 - **Framework**: Next.js 14 (App Router)
@@ -17,14 +19,14 @@ This is Phase 2 of the Scheduling Assistant project - a chat interface with sche
 
 ## Features (Phase 2)
 
-- ✅ Clean chat interface optimized for mobile devices
-- ✅ Direct integration with Claude API (non-streaming)
-- ✅ **File-based schedule storage** - no external dependencies
-- ✅ **Schedule-aware responses** - Claude has context about kids' activities
-- ✅ **Version controlled** - schedule changes tracked in git
-- ✅ Simple logging with `console.log()`
-- ✅ Both user and app messages left-aligned with visual distinction
-- ✅ Loading states and error handling
+- Clean chat interface optimized for mobile devices
+- Direct integration with Claude API (non-streaming)
+- **File-based schedule storage** - no external dependencies
+- **Schedule-aware responses** - Claude has context about kids' activities
+- **Version controlled** - schedule changes tracked in git
+- Simple logging with `console.log()`
+- Both user and app messages left-aligned with visual distinction
+- Loading states and error handling
 
 ## Setup
 
