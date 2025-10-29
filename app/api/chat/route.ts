@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import * as fs from "fs";
 import * as path from "path";
+import { auth } from "@/auth";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -9,6 +10,18 @@ const anthropic = new Anthropic({
 
 export async function POST(request: NextRequest) {
   try {
+    // Check authentication
+    const session = await auth();
+    if (!session || !session.user?.email) {
+      console.log("Unauthorized request: no valid session");
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
+    const userName = session.user.email; // Phase 4: Use real user email from Google OAuth
+
     const body = await request.json();
     const { message } = body;
 
@@ -20,7 +33,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const userName = "app user"; // Phase 2: hardcoded for all users
     console.log("User:", userName, "Question:", message.substring(0, 100));
 
     // Read system prompt from file

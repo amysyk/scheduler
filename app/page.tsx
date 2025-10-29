@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import UserMessage from "./components/UserMessage";
 import AssistantMessage from "./components/AssistantMessage";
+import LoginModal from "./components/LoginModal";
 
 interface Message {
   role: "user" | "assistant";
@@ -10,6 +12,7 @@ interface Message {
 }
 
 export default function Home() {
+  const { data: session, status } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -19,6 +22,19 @@ export default function Home() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  // Show login modal if not authenticated
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    return <LoginModal />;
+  }
 
   const handleSendMessage = async () => {
     if (!inputText.trim() || isLoading) return;
