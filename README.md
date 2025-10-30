@@ -1,10 +1,10 @@
-# Scheduling Assistant - Phase 4
+# Scheduling Assistant
 
-A chat-based scheduling assistant powered by Claude AI to help coordinate family schedules and activities.
+A chat-based scheduling assistant powered by Claude AI to help coordinate schedules and activities.
 
 ## Overview
 
-This is Phase 4 of the Scheduling Assistant project - a **secure, authenticated** chat interface with Google OAuth. The app requires users to sign in with their Google account, reads the kids' schedule from a markdown file, and uses it as context for Claude's responses. All user interactions are logged with their actual Google email addresses.
+The assistant allows users authenticated with Google OAuth to ask questions about kid's schedules. The schedules are returned as formatted markdown. All user interactions are logged for observability.
 
 ![Scheduling Assistant Interface](./public/app-screenshot.png)
 
@@ -20,25 +20,21 @@ This is Phase 4 of the Scheduling Assistant project - a **secure, authenticated*
 - **Analytics**: Vercel Analytics & Speed Insights
 
 ## Features
-
-### Phase 4 (Current)
-- ✅ **Google OAuth Authentication** - secure sign-in with Google accounts
-- ✅ **Protected Routes** - middleware ensures only authenticated users can access
-- ✅ **Session Management** - JWT-based sessions with automatic refresh
-- ✅ **User Identification** - real Google email addresses logged for all interactions
-- ✅ **Login Modal** - clean, mobile-responsive authentication UI
-
-### Phase 2 & Earlier
-- ✅ Clean chat interface optimized for mobile devices
-- ✅ Direct integration with Claude API (non-streaming)
-- ✅ **File-based schedule storage** - no external dependencies
-- ✅ **Schedule-aware responses** - Claude has context about kids' activities
-- ✅ **Version controlled** - schedule changes tracked in git
-- ✅ Simple logging with `console.log()`
-- ✅ Both user and app messages left-aligned with visual distinction
-- ✅ Loading states and error handling
-- ✅ Markdown rendering with syntax highlighting
-- ✅ Dynamic date injection (Pacific timezone)
+- **Google OAuth Authentication** - secure sign-in with Google accounts
+- **Protected Routes** - middleware ensures only authenticated users can access
+- **Session Management** - JWT-based sessions with automatic refresh
+- **User Identification** - real Google email addresses logged for all interactions
+- **Login Modal** - clean, mobile-responsive authentication UI
+- **Chat Interface** Clean chat interface optimized for mobile devices
+- **LLM Integration** Direct integration with Claude API (non-streaming)
+- **File-based schedule storage** - no external dependencies
+- **Schedule-aware responses** - Claude has context about kids' activities
+- **Version controlled** - schedule changes tracked in git
+- **Simple logging** - `console.log()` for all interactions
+- **Left-aligned messages** - both user and app messages with visual distinction
+- **Loading states** - error handling for failed requests
+- **Markdown rendering** - syntax highlighting support
+- **Dynamic date injection** - Pacific timezone context
 
 ## Setup
 
@@ -135,7 +131,6 @@ In the Vercel dashboard:
   - `GOOGLE_CLIENT_ID` - Your Google OAuth client ID
   - `GOOGLE_CLIENT_SECRET` - Your Google OAuth client secret
   - `AUTH_SECRET` - Generate with `openssl rand -base64 32`
-  - `AUTH_URL` - Your production URL (e.g., `https://your-app.vercel.app`)
 
 **Important**: Also update your Google Cloud Console OAuth redirect URIs to include:
 - `https://your-app.vercel.app/api/auth/callback/google`
@@ -232,53 +227,6 @@ Logged information includes:
 
 ## What's Next?
 
-Phase 4 is complete! Future phases will include:
+Future phases will include:
 - **Phase 5**: User permissions config file (read/write roles)
 - **Phase 6**: Memory feature to automatically update schedule
-- **Phase 7**: Schedule write functionality via AI
-
-## Troubleshooting
-
-### Authentication Issues
-
-**"Redirect URI mismatch" error**
-- Verify your Google Cloud Console OAuth redirect URIs exactly match:
-  - Local: `http://localhost:3000/api/auth/callback/google`
-  - Production: `https://your-app.vercel.app/api/auth/callback/google`
-- No trailing slashes allowed
-
-**"This app's request is invalid" error**
-- Check that all OAuth environment variables are set correctly
-- Ensure `GOOGLE_CLIENT_ID` ends with `.apps.googleusercontent.com`
-- Ensure `AUTH_SECRET` is set (generate with `openssl rand -base64 32`)
-
-**Stuck at login screen or infinite redirect loop**
-- Clear browser cookies and cache
-- Restart the development server
-- Verify `AUTH_URL` matches your current environment
-
-### API Errors
-
-**"Failed to get response" error**
-- Check that your `ANTHROPIC_API_KEY` is set correctly in `.env.local` (local) or Vercel environment variables (production)
-- Verify your API key is valid at https://console.anthropic.com/
-
-**"Unauthorized" (401) error**
-- Your session may have expired - refresh the page and sign in again
-- Check that Auth.js middleware is configured correctly
-
-### Schedule not loading or outdated
-- Make sure `data/schedule.md` exists in your repository
-- Verify the file has been committed and pushed to GitHub
-- Redeploy to Vercel to pick up the latest changes
-
-### Styles not loading
-- Make sure Tailwind CSS is properly configured
-- Try clearing `.next` cache: `rm -rf .next` and restart dev server
-
-### Port already in use
-- Change the port: `npm run dev -- -p 3001`
-
-## License
-
-Private project for family use.
