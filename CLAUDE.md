@@ -47,7 +47,11 @@ Required for both local and production:
 - `GOOGLE_CLIENT_ID`: OAuth client ID from Google Cloud Console
 - `GOOGLE_CLIENT_SECRET`: OAuth client secret from Google Cloud Console
 - `AUTH_SECRET`: Random secret for Auth.js (generate with: `openssl rand -base64 32`)
-- `AUTH_URL`: App URL (http://localhost:3000 for dev, production URL for Vercel)
+  - **IMPORTANT**: Avoid special characters like `$` in the secret (causes parsing issues on Vercel Edge Runtime)
+  - Generate different secrets for local vs production environments
+- `AUTH_URL`: App URL (http://localhost:3000 for local dev)
+  - **NOT needed for Vercel production** - Vercel auto-detects the host
+  - Do not set `NEXTAUTH_URL` on Vercel - it's automatically detected
 
 ## Architecture
 
@@ -68,6 +72,8 @@ Required for both local and production:
 **`auth.ts`**
 - Auth.js v5 configuration at root level
 - Configures Google OAuth provider
+- **trustHost: true** - Required for Vercel/serverless deployment
+- **Explicit secret parameter** - Ensures AUTH_SECRET is available to Edge Runtime
 - JWT session strategy (no database required)
 - Handles session callbacks to capture user email
 
@@ -166,6 +172,33 @@ Required for both local and production:
 - No LLM version display
 - No navigation/configuration buttons
 - Messages: white background for user, blue background for app
+
+## Deployment Considerations
+
+### Vercel Production Deployment
+
+**Required Configuration in auth.ts**:
+- `trustHost: true` - Required for Auth.js v5 to work in serverless/edge environments
+- `secret: process.env.AUTH_SECRET` - Explicitly pass secret to ensure Edge Runtime access
+
+**Environment Variables in Vercel Dashboard**:
+Set for Production, Preview, and Development:
+- `ANTHROPIC_API_KEY`
+- `GOOGLE_CLIENT_ID`
+- `GOOGLE_CLIENT_SECRET`
+- `AUTH_SECRET` (avoid special characters like `$`)
+
+**DO NOT set these** (Vercel auto-detects):
+- ~~`AUTH_URL`~~
+- ~~`NEXTAUTH_URL`~~
+
+**Common Deployment Issues**:
+1. **"Server configuration error"** → Missing `trustHost: true` in auth.ts
+2. **"MissingSecret error"** → AUTH_SECRET not set or contains special characters like `$`
+3. **Edge Runtime issues** → Middleware runs on Edge, requires explicit secret parameter
+
+**Google Cloud Console**:
+- Ensure production redirect URI is added: `https://your-app.vercel.app/api/auth/callback/google`
 
 ## Future Development Notes
 
